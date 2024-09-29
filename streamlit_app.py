@@ -12,11 +12,10 @@ import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
+    layout="centered",
     page_title='Rengøring',
     page_icon=':broom:', # This is an emoji shortcode. Could be a URL too.
 )
-
-
 # -----------------------------------------------------------------------------
 # Draw the actual page
 
@@ -29,6 +28,33 @@ st.set_page_config(
 # Add some spacing
 ''
 ''
+
+# Add some styling for mobile responsiveness
+st.markdown(
+    """
+    <style>
+        /* Increase padding to avoid cutting off the title */
+        .main .block-container {
+            padding-top: 2rem;  /* Adjust top padding to avoid clipping */
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Adjust text size for mobile */
+        @media (max-width: 600px) {
+            h1, h2, h3, h4, h5, h6 {
+                font-size: 90%;
+            }
+            .stButton button {
+                width: 100%; /* Make buttons full-width on mobile */
+            }
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 closest_sat = closest_saturday(datetime.today()).strftime("%d/%m")
 st.header(f"Nærmeste lørdag er {closest_sat}")
 
