@@ -8,8 +8,6 @@ from datetime import datetime, timedelta
 def load_tasks(file):
     df = pd.read_excel(file, engine='openpyxl')
     return df
-df = pd.read_pickle("current_state.pickle")
-
 
 def closest_saturday(date):
     # Get the current weekday (Monday=0, Sunday=6)
