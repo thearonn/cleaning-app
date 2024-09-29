@@ -35,15 +35,15 @@ st.markdown(
     <style>
         /* Increase padding to avoid cutting off the title */
         .main .block-container {
-            padding-top: 2rem;  /* Adjust top padding to avoid clipping */
+            padding-top: 4rem;  /* Adjust top padding to avoid clipping */
             padding-left: 1rem;
             padding-right: 1rem;
         }
 
         /* Adjust text size for mobile */
-        @media (max-width: 600px) {
+        @media (max-width: 1000px) {
             h1, h2, h3, h4, h5, h6 {
-                font-size: 90%;
+                font-size: 50%;
             }
             .stButton button {
                 width: 100%; /* Make buttons full-width on mobile */
@@ -51,8 +51,8 @@ st.markdown(
 
             /* Dataframe customization */
             .stDataFrame {
-                font-size: 8px; /* Smaller font size for dataframe */
-                width: 110% !important; /* Ensure the dataframe uses full width */
+                font-size: 6px; /* Smaller font size for dataframe */
+                width: 100% !important; /* Ensure the dataframe uses full width */
             }
             table {
                 width: 100%;
