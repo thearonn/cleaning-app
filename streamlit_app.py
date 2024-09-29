@@ -51,7 +51,7 @@ st.markdown(
 
             /* Dataframe customization */
             .stDataFrame {
-                font-size: 12px; /* Smaller font size for dataframe */
+                font-size: 8px; /* Smaller font size for dataframe */
                 width: 110% !important; /* Ensure the dataframe uses full width */
             }
             table {
