@@ -59,7 +59,7 @@ st.markdown(
             }
             th, td {
                 padding: 4px; /* Reduce padding for better spacing */
-                font-size: 12px; /* Adjust table font size */
+                font-size: 8px; /* Adjust table font size */
             }
         }
     </style>
@@ -96,6 +96,7 @@ st.data_editor(
         )
     },
     hide_index=True,
+    use_container_width=True
 )
 
 this_week2 = pd.DataFrame(this_week["Task"])
@@ -113,6 +114,7 @@ st.data_editor(
     },
     disabled=["widgets"],
     hide_index=True,
+    use_container_width=True
 )
 
 st.dataframe(this_week2)
