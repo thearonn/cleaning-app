@@ -48,6 +48,19 @@ st.markdown(
             .stButton button {
                 width: 100%; /* Make buttons full-width on mobile */
             }
+
+            /* Dataframe customization */
+            .stDataFrame {
+                font-size: 12px; /* Smaller font size for dataframe */
+                width: 110% !important; /* Ensure the dataframe uses full width */
+            }
+            table {
+                width: 100%;
+            }
+            th, td {
+                padding: 4px; /* Reduce padding for better spacing */
+                font-size: 12px; /* Adjust table font size */
+            }
         }
     </style>
     """,
