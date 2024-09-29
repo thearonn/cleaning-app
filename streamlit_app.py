@@ -6,6 +6,10 @@ from data import closest_saturday
 from datetime import datetime, timedelta
 import csv
 import copy
+
+import streamlit as st
+import pandas as pd
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
     page_title='Rengøring',
@@ -56,6 +60,7 @@ st.data_editor(
 )
 
 this_week2 = pd.DataFrame(this_week["Task"])
+
 this_week2["Completed?"] = False
 this_week2["Move to next week"] = False
 this_week2["Skip"] = False
@@ -96,3 +101,76 @@ st.dataframe(this_week2)
 #    disabled=["widgets"],
 #    hide_index=True,
 #)
+
+this_week3 = pd.DataFrame(this_week["Task"])
+# Initialize a container for the task table
+with st.form(key='task_form'):
+    updated_statuses = []
+    
+    # Create table headers
+    st.write(f"{'Task':<20}{'Completed':<20}{'Skip':<20}{'Move':<20}")
+    
+    checkbox_completed = []
+    checkbox_skipped = []
+    checkbox_moved = []
+    # Loop through tasks and create a row for each
+    col1, col2, col3 , col4= st.columns([3, 1, 1,1])
+    with col1:
+        st.write("Task")
+    with col2:
+        st.write("Completed?")
+    with col3:
+        st.write("Skip")
+    with col4:
+        st.write("Move to next week")
+    
+    for i, row in this_week3.iterrows():
+        
+
+        with col1:
+            st.write(f"{row['Task']}")
+
+        with col2:
+            checkbox_completed.append(st.checkbox("completed",key=f"checkbox_complete{i}", label_visibility="hidden"))
+        
+        with col3:
+            checkbox_skipped.append(st.checkbox("skipped",key=f"checkbox_skip{i}", label_visibility="hidden"))
+        
+        with col4:
+            checkbox_moved.append(st.checkbox("moved",key=f"checkbox_moved{i}", label_visibility="hidden"))
+    submit_button = st.form_submit_button(label='Submit')
+
+
+this_week3["Status"] = "Pending"
+# Add custom radio buttons for task status
+status_options = ['Pending', 'Completed', 'Skipped', 'Moved']
+
+# Create a grid builder
+gb = GridOptionsBuilder.from_dataframe(this_week3)
+
+# Configure column "Status" to use radio buttons for user input
+gb.configure_column("Status", editable=True, cellEditor='agSelectCellEditor', 
+                    cellEditorParams={'values': status_options})
+
+# Allow multiline wrapping for the 'Task' column
+gb.configure_column("Task", wrapText=True, autoHeight=True)
+
+# Create the grid options
+grid_options = gb.build()
+
+# Display the grid with the radio button column for status
+grid_response = AgGrid(
+    this_week3,
+    gridOptions=grid_options,
+    update_mode=GridUpdateMode.MODEL_CHANGED,
+    allow_unsafe_jscode=True,
+    height=300
+)
+
+# Access the updated DataFrame from the grid
+updated_df = grid_response['data']
+
+# Display the updated DataFrame when submitted
+if st.button('Submit'):
+    st.write("### Updated Task List")
+    st.dataframe(updated_df)
