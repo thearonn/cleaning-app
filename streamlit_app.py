@@ -49,8 +49,8 @@ edited_df = st.data_editor(
     this_week,
     column_config={
         "Fixed": st.column_config.CheckboxColumn("Fixed", default=False),
-        "Move": st.column_config.CheckboxColumn("Move?", default=False),
-        "Skip": st.column_config.CheckboxColumn("Skip?", default=False),
+        "Move": st.column_config.CheckboxColumn("Move", default=False),
+        "Skip": st.column_config.CheckboxColumn("Skip", default=False),
     },
     hide_index=True,
     use_container_width=True
