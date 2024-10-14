@@ -24,7 +24,6 @@ closest_sat = closest_saturday(datetime.today())
 st.header(f'Nærmeste lørdag er {closest_sat.strftime("%d/%m")}')
 
 today = closest_sat.strftime('%Y-%m-%d')
-today = "2024-10-12"
 # Placeholder to display the task table
 table_placeholder = st.empty()  # This creates an empty container to hold the table later
 
