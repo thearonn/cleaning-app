@@ -18,10 +18,10 @@ st.set_page_config(
 # Add some spacing
 ''
 ''
-tab1, tab2= st.tabs(["Denne uge", "Overview"])
+tab1, tab2, tab3, tab_overview= st.tabs(["Denne uge", "Hvad skal vi næste uge", "Tilføj nye opgaver","Overview"])
 # Get the closest Saturday
+closest_sat = closest_saturday(datetime.today())
 with tab1:
-    closest_sat = closest_saturday(datetime.today())
     st.header(f'Nærmeste lørdag er {closest_sat.strftime("%d/%m")}')
 
     today = closest_sat.strftime('%Y-%m-%d')
@@ -127,6 +127,75 @@ with tab1:
         table_placeholder.write("Du kan holde fri og drikke en kop kaffe")
 
 with tab2:
+    next_saturday = closest_sat + timedelta(7)
+    st.header(f'Næste lørdag er {next_saturday.strftime("%d/%m")}')
+
+    next_saturday = next_saturday.strftime('%Y-%m-%d')
+    # Placeholder to display the task table
+    table_placeholder = st.empty()  # This creates an empty container to hold the table later
+
+    # Load the current state from CSV
+    next_week = pd.read_csv("current_state.csv")
+
+    # Ensure that "Next due date" is a datetime object
+    next_week["Next due date"] = pd.to_datetime(next_week["Next due date"], format='%Y-%m-%d')
+
+    if (next_week["Dominant"] == "dominant").any():
+        next_week.loc[pd.isna(current["Dominant"]), "Next due date"] += timedelta(days=7)
+        next_week.to_csv("current_state.csv", index=False)
+
+    next_week_filtered = next_week[next_week["Next due date"] == next_saturday]
+    print(next_week_filtered)
+    print(next_week_filtered[["Task", "Last done"]])
+    st.dataframe(next_week_filtered[["Task", "Last done"]], hide_index=True)
+
+with tab3:
+
+    # Streamlit app title
+    st.title('Tilføj en opgave')
+
+    # Input fields
+    task_name = st.text_input("Hvad er opgaven?")
+    task_date = st.date_input("Hvornår skal det gøres næste gang? (skal være en lørdag)", value=datetime.today())
+    task_frequency = st.text_input("Hvor ofte skal det gøres? Antal uger imellem.")
+    task_type = st.selectbox("Er det en dominant opgave, gentagende opgave eller almindelig opgave?", ["normal","dominant", "gentagende"])
+    
+    if task_type == "normal":
+        dominant = None
+    elif task_type == "dominant":
+        dominant = "dominant"
+    elif task_type == "gentagende":
+        dominant = "reccuring"
+    # Submit button
+    if st.button('Submit'):
+
+        st.write("**Task Name**:", task_name)
+        st.write("**Next Due Date**:", task_date)
+        st.write("**Frequency**:", task_frequency)
+        st.write("**Task Type**:", task_type)
+        
+        new_row = {
+        "Task": task_name,
+        "Next due date": task_date,
+        "Last done": None,
+        "Frequency": task_frequency,
+        "Dominant": dominant,
+        "Moved from": None
+        }
+
+        # Load the existing CSV file
+        df = pd.read_csv("current_state.csv")
+    
+        # Append the new row
+        df = df.append(new_row, ignore_index=True)
+    
+        # Save the updated CSV file
+        df.to_csv("current_state.csv", index=False)
+    
+        st.write("Task added to CSV!")
+
+
+with tab_overview:
     st.write("### Debug: Current state of the CSV")
-    st.dataframe(current)
+    st.dataframe(current, hide_index=True)
 
