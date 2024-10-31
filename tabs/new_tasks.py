@@ -34,11 +34,11 @@ def add_new_tasks(sheet_url, sheet_name):
         "Dominant": dominant,
         "Moved from": None
         }
-
+        new_row_df = pd.DataFrame([new_row])
         # Load the existing CSV file
         df, worksheet = load_gsheet_data(sheet_url, sheet_name)
         # Append the new row
-        df = pd.concat([df, new_row], ignore_index=True)
+        df = pd.concat([df, new_row_df], ignore_index=True)
     
         save_to_gsheet(worksheet, df)
     
