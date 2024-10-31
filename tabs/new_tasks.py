@@ -38,7 +38,7 @@ def add_new_tasks(sheet_url, sheet_name):
         # Load the existing CSV file
         df, worksheet = load_gsheet_data(sheet_url, sheet_name)
         # Append the new row
-        df = df.append(new_row, ignore_index=True)
+        df = pd.concat([df, new_row], ignore_index=True)
     
         save_to_gsheet(worksheet, df)
     
