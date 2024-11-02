@@ -14,7 +14,10 @@ def next_week(closest_sat, sheet_url, sheet_name):
     next_week, worksheet = load_gsheet_data(sheet_url, sheet_name)
     # Ensure that "Next due date" is a datetime object
     next_week["Next due date"] = pd.to_datetime(next_week["Next due date"], format='%Y-%m-%d')
-    if (next_week["Dominant"] == "dominant").any():
+    next_week_filtered = next_week[next_week["Next due date"] == next_saturday]
+    if (next_week_filtered["Dominant"] == "dominant").any() & (next_week_filtered["Dominant"] == "").any():
+        print("HUH?")
+        print(next_week)
         next_week.loc[next_week["Dominant"] == "", "Next due date"] += timedelta(days=7)
         save_to_gsheet(worksheet, next_week)
     next_week_filtered = next_week[next_week["Next due date"] == next_saturday]

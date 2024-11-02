@@ -15,9 +15,12 @@ def this_week(closest_sat, sheet_url, sheet_name):
     # Ensure that "Next due date" is a datetime object
     current["Next due date"] = pd.to_datetime(current["Next due date"], format='%Y-%m-%d')
 
-    if (current["Dominant"] == "dominant").any():
+    this_week = current[current["Next due date"] == today]
+    print(this_week)
+    if (this_week["Dominant"] == "dominant").any() & (this_week["Dominant"] == "").any():
+        print("LORT")
         current.loc[current["Dominant"] == "", "Next due date"] += timedelta(days=7)
-        current.to_csv("current_state.csv", index=False)
+        this_week = current[current["Next due date"] == today]
 
     # Define a function to filter and display tasks for this week
     def display_table():
