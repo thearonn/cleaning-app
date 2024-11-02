@@ -16,9 +16,7 @@ def this_week(closest_sat, sheet_url, sheet_name):
     current["Next due date"] = pd.to_datetime(current["Next due date"], format='%Y-%m-%d')
 
     this_week = current[current["Next due date"] == today]
-    print(this_week)
     if (this_week["Dominant"] == "dominant").any() & (this_week["Dominant"] == "").any():
-        print("LORT")
         current.loc[current["Dominant"] == "", "Next due date"] += timedelta(days=7)
         this_week = current[current["Next due date"] == today]
 
@@ -35,8 +33,10 @@ def this_week(closest_sat, sheet_url, sheet_name):
             return
         else:
             # Return the table and the edited dataframe from data editor
+            unique_key = f"this_week_data_editor_{datetime.now().timestamp()}"
             edited_df = table_placeholder.data_editor(
                 this_week,
+                key = unique_key,
                 column_config={
                     "Fixed": st.column_config.CheckboxColumn("Fixed", default=False),
                     "Move": st.column_config.CheckboxColumn("Move", default=False),
