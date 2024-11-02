@@ -16,7 +16,7 @@ def this_week(closest_sat, sheet_url, sheet_name):
     current["Next due date"] = pd.to_datetime(current["Next due date"], format='%Y-%m-%d')
 
     if (current["Dominant"] == "dominant").any():
-        current.loc[pd.isna(current["Dominant"]), "Next due date"] += timedelta(days=7)
+        current.loc[current["Dominant"] == "", "Next due date"] += timedelta(days=7)
         current.to_csv("current_state.csv", index=False)
 
     # Define a function to filter and display tasks for this week
@@ -45,7 +45,9 @@ def this_week(closest_sat, sheet_url, sheet_name):
 
     # Initial display of the table
     edited_df = display_table()
-    try:
+    a = 2
+    if a == 2:
+    #try:
     # Update button
         if st.button("Update", type="primary"):
                 # Backup the current CSV
@@ -81,7 +83,7 @@ def this_week(closest_sat, sheet_url, sheet_name):
                     task_index = current[current["Task"] == row["Task"]].index[0]
 
                     next_due_date = pd.to_datetime(current.loc[task_index, "Next due date"], format='%Y-%m-%d')
-                    if pd.isna(current.loc[task_index, "Moved from"]):
+                    if current.loc[task_index, "Moved from"] == "":
                         current.loc[task_index, "Moved from"] = next_due_date
 
                     # Calculate and update the new "Next due date"
@@ -90,12 +92,16 @@ def this_week(closest_sat, sheet_url, sheet_name):
 
 
             # Save the updated DataFrame to the CSV
+            date_columns = ["Next due date", "Last done", "Moved from"]
+            for col in date_columns:
+                if col in current.columns:
+                    current[col] = current[col].astype(str)
             save_to_gsheet(worksheet, current)
 
             # Filter and display the updated table
             edited_df = display_table()  # This will re-render the table with updated tasks
-    except:
-        st.write("Ups, du glemte at klikke noget af :clown_face:")
+    #except:
+    #    st.write("Ups, du glemte at klikke noget af :clown_face:")
 
     if st.button("Skip uge :pig:"):
         st.write("Dovne svin")
