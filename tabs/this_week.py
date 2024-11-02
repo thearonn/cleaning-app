@@ -66,7 +66,7 @@ def this_week(closest_sat, sheet_url, sheet_name):
                     current.loc[task_index, "Last done"] = next_due_date.strftime('%Y-%m-%d')
 
                     # If the task has been moved
-                    if not pd.isna(current.loc[task_index, "Moved from"]):
+                    if not current.loc[task_index, "Moved from"] == "":
                         new_next_due_date = pd.to_datetime(current.loc[task_index, "Moved from"], format='%Y-%m-%d') + timedelta(weeks=frequency_in_weeks)
                         # If the task occur every week OR have been moved multiple times.
                         if new_next_due_date <= next_due_date:
