@@ -3,14 +3,12 @@ import pandas as pd
 from datetime import datetime, timedelta
 from helpers import load_gsheet_data, save_to_gsheet
 
-def this_week(closest_sat, sheet_url, sheet_name):
+def this_week(closest_sat, current, worksheet):
     st.header(f'Nærmeste lørdag er {closest_sat.strftime("%d/%m")}')
 
     today = closest_sat.strftime('%Y-%m-%d')
     # Placeholder to display the task table
     table_placeholder = st.empty()  # This creates an empty container to hold the table later
-
-    current, worksheet = load_gsheet_data(sheet_url=sheet_url, sheet_name=sheet_name)
 
     # Ensure that "Next due date" is a datetime object
     current["Next due date"] = pd.to_datetime(current["Next due date"], format='%Y-%m-%d')
@@ -18,7 +16,9 @@ def this_week(closest_sat, sheet_url, sheet_name):
     this_week = current[current["Next due date"] == today]
     if (this_week["Dominant"] == "dominant").any() & (this_week["Dominant"] == "").any():
         current.loc[current["Dominant"] == "", "Next due date"] += timedelta(days=7)
+        save_to_gsheet(worksheet, current)
         this_week = current[current["Next due date"] == today]
+        print("dominant")
 
     # Define a function to filter and display tasks for this week
     def display_table():
@@ -44,6 +44,8 @@ def this_week(closest_sat, sheet_url, sheet_name):
                 hide_index=True,
                 use_container_width=True
             )
+            print("display")
+            print(edited_df)
             return edited_df
 
     # Initial display of the table
@@ -53,9 +55,7 @@ def this_week(closest_sat, sheet_url, sheet_name):
     #try:
     # Update button
         if st.button("Update", type="primary"):
-                # Backup the current CSV
-            save_to_gsheet(worksheet, current)
-
+            print("update")
             # Iterate through the rows in the data editor
             for index, row in edited_df.iterrows():
                 if row["Fixed"]:
@@ -99,14 +99,17 @@ def this_week(closest_sat, sheet_url, sheet_name):
             for col in date_columns:
                 if col in current.columns:
                     current[col] = current[col].astype(str)
+            print("save updated")
             save_to_gsheet(worksheet, current)
 
-            # Filter and display the updated table
-            edited_df = display_table()  # This will re-render the table with updated tasks
+            edited_df = display_table()
+            print("display after update")  # This will re-render the table with updated tasks
+            return current
     #except:
     #    st.write("Ups, du glemte at klikke noget af :clown_face:")
 
     if st.button("Skip uge :pig:"):
+        print("skipidi")
         st.write("Dovne svin")
          # Add 7 days to all "Next due date" values
         current["Next due date"] = pd.to_datetime(current["Next due date"], format='%Y-%m-%d') + timedelta(days=7)
@@ -114,3 +117,7 @@ def this_week(closest_sat, sheet_url, sheet_name):
         # Save the updated DataFrame to the CSV
         save_to_gsheet(worksheet, current)
         table_placeholder.write("Du kan holde fri og drikke en kop kaffe")
+        return current
+    print("RETURN")
+    return current
+    

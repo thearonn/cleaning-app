@@ -6,7 +6,7 @@ from tabs.this_week import this_week
 from tabs.new_tasks import add_new_tasks
 from tabs.next_week import next_week
 from tabs.task_overview import overview
-
+from helpers import load_gsheet_data, save_to_gsheet
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -30,11 +30,18 @@ closest_sat = closest_saturday(datetime.today())
 sheet_url = "https://docs.google.com/spreadsheets/d/1TsUeKjOKdTfHLi4jaczyzPsscrDBj_Yue-kRlQzpbEU/edit?gid=235400169#gid=235400169"
 sheet_name = "current_state"  
 
+current, worksheet = load_gsheet_data(sheet_url=sheet_url, sheet_name=sheet_name)
+print("Loader igen")
+        
 with tab1:
-    this_week(closest_sat, sheet_url, sheet_name)
+    print("running tab 1")
+    print(current)
+
+    current = this_week(closest_sat, current, worksheet)
 
 with tab2:
-    next_week(closest_sat, sheet_url, sheet_name)
+    print("running tab2")
+    current = next_week(closest_sat, current, worksheet)
 
 with tab3:
    add_new_tasks(sheet_url, sheet_name)
