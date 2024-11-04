@@ -41,7 +41,6 @@ def authenticate_gsheets():
         }
         creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
     except FileNotFoundError:
-        print("heeej")
         # Running locally - load credentials from the .json file
         creds = ServiceAccountCredentials.from_json_keyfile_name("service_account_credentials.json", scope)
 
